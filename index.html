@@ -906,7 +906,35 @@
     document.addEventListener('DOMContentLoaded', () => {
       loadSongs();
       loadSchedule();
+      loadProfileImage();
     });
+
+    // ── 프로필 사진 연동 ─────────────────────────────────────────
+    const PROFILE_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Lxb54y3QEnnrvsCmuGKEoUAuXeqCL_udMvz1cvSP61QnRQ64hIr5Chc-2toIw6MSWdxCA7rv2hup/pub?output=csv';
+
+    async function loadProfileImage() {
+      const urls = [
+        PROFILE_CSV_URL + '&_t=' + Date.now(),
+        'https://corsproxy.io/?' + encodeURIComponent(PROFILE_CSV_URL),
+        'https://api.allorigins.win/raw?url=' + encodeURIComponent(PROFILE_CSV_URL),
+      ];
+      let text = null;
+      for (const url of urls) {
+        try {
+          const res = await fetch(url, { cache: 'no-store' });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          text = await res.text();
+          break;
+        } catch (e) {
+          console.warn('[프로필] fetch 실패:', e.message);
+        }
+      }
+      if (!text) return;
+      const imgUrl = text.trim().split(/[\r\n,]/)[0].trim();
+      if (!imgUrl || !imgUrl.startsWith('http')) return;
+      const img = document.querySelector('img[alt="스트리머 프로필"]');
+      if (img) img.src = imgUrl;
+    }
 
     // 치지직 라이브 상태 체크 함수
     const CHZZK_CHANNEL_ID = 'd3c53b85a5a5aa176c94d49414cb1e03';
