@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SONGWORYANG | 송워량 공식 홈페이지</title>
+  <!-- FontAwesome & Lucide Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Tone.js for Web Audio Bubble Sound Effects -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-color: #0b0512;
+      --card-bg: #13081e;
+      --card-hover: #221033;
+      --accent-purple: #7e2bce;
+      --accent-light: #b666ff;
+      --accent-glow: rgba(126, 43, 206, 0.45);
+      --text-main: #f3e8ff;
+      --text-sub: #a78bfa;
+      --border-color: #2b1145;
+      
+      /* 브랜드 아이콘 포인트 컬러 */
+      --chzzk-color: #00ffa3;
+      --youtube-color: #ff3333;
+      --singtube-color: #c084fc;
+      --replay-color: #e024a5;
+      --cafe-color: #03c75a;
+      --x-color: #e2e8f0;
+      --discord-color: #5865f2;
+      --goods-color: #9d4edd;
+    }
+
+    /* 커스텀 마녀 지팡이 마우스 커서 설정 */
+    *, body, button, a, input {
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><text x="0" y="24" font-size="22">🪄</text></svg>') 4 4, auto !important;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* --- [배경 몽환적인 물방울 애니메이션] --- */
+    .bubbles-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .bubble {
+      position: absolute;
+      bottom: -100px;
+      background: radial-gradient(circle at 30% 30%, rgba(192, 132, 252, 0.25), rgba(126, 43, 206, 0.08));
+      border: 1px solid rgba(192, 132, 252, 0.3);
+      box-shadow: 0 0 15px rgba(126, 43, 206, 0.2), inset 0 0 8px rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      animation: floatUp 14s infinite ease-in-out;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(0.8) rotate(0deg);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.6;
+      }
+      80% {
+        opacity: 0.5;
+      }
+      100% {
+        transform: translateY(-115vh) scale(1.2) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* 마우스 클릭 시 물방울 터짐 파티클 애니메이션 */
+    .click-bubble-burst {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(216, 180, 254, 0.8) 0%, rgba(126, 43, 206, 0.4) 70%, transparent 100%);
+      border: 1.5px solid rgba(224, 190, 255, 0.9);
+      box-shadow: 0 0 10px rgba(182, 102, 255, 0.6);
+      animation: popBurst 0.5s ease-out forwards;
+    }
+
+    @keyframes popBurst {
+      0% {
+        transform: translate(-50%, -50%) scale(0.2);
+        opacity: 1;
+      }
+      70% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1.6);
+        opacity: 0;
+      }
+    }
+
+    header, main, footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* --- [상단 네비게이션] --- */
+    header {
+      background: rgba(11, 5, 18, 0.95);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.9rem 1.5rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-family: 'Cinzel', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #e9d5ff;
+      letter-spacing: 2px;
+    }
+
+    .logo-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--accent-light);
+      background: rgba(126, 43, 206, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-light);
+      font-size: 1rem;
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 0.6rem;
+      list-style: none;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-main);
+      padding: 0.5rem 1.1rem;
+      border-radius: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.25s ease;
+      font-size: 0.95rem;
+    }
+
+    .nav-btn:hover {
+      background: rgba(126, 43, 206, 0.15);
+    }
+
+    .nav-btn.active {
+      background: var(--accent-purple) !important;
+      color: #ffffff !important;
+      border-color: var(--accent-purple) !important;
+      box-shadow: 0 0 15px rgba(126, 43, 206, 0.5);
+    }
+
+    /* 메인 공간 */
+    main {
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* --- [1. 홈 화면 : 히어로 프로필] --- */
+    .hero-profile-card {
+      background: linear-gradient(180deg, #150926 0%, #0e051a 100%);
+      border: 1.5px solid #4a197d;
+      border-radius: 28px;
+      padding: 3.5rem 2rem;
+      text-align: center;
+      box-shadow: 0 0 40px var(--accent-glow);
+      margin-bottom: 2rem;
+      position: relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hero-profile-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 50px rgba(182, 102, 255, 0.6);
+    }
+
+    .profile-circle-wrap {
+      width: 230px;
+      height: 230px;
+      margin: 0 auto 1.5rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #a855f7, #581c87);
+      padding: 5px;
+      box-shadow: 0 0 40px rgba(168, 85, 247, 0.55);
+      transition: transform 0.3s ease;
+    }
+
+    .hero-profile-card:hover .profile-circle-wrap {
+      transform: scale(1.04);
+    }
+
+    .profile-circle-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .profile-circle-inner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-title-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      margin-bottom: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .profile-name-title {
+      font-size: 2.3rem;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1;
+    }
+
+    .mail-badge {
+      display: inline-block;
+      background: rgba(126, 43, 206, 0.25);
+      border: 1px solid #6b21a8;
+      color: #d8b4fe;
+      padding: 0.25rem 0.8rem;
+      border-radius: 16px;
+      font-size: 0.75rem;
+    }
+
+    .profile-desc-sub {
+      color: var(--text-main);
+      font-size: 1.05rem;
+      font-weight: 500;
+    }
+
+    /* --- [바로가기 카드리스트] --- */
+    .link-grid-v2 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.2rem;
+    }
+
+    @media (max-width: 900px) {
+      .link-grid-v2 { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 550px) {
+      .link-grid-v2 { grid-template-columns: 1fr; }
+    }
+
+    .grid-box-card {
+      background: linear-gradient(145deg, #160927 0%, #10061d 100%);
+      border: 1.5px solid #361457;
+      border-radius: 20px;
+      padding: 1.8rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: var(--text-main);
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    .grid-box-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-light);
+      box-shadow: 0 8px 25px var(--accent-glow);
+    }
+
+    .box-icon-inner {
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+      transition: transform 0.2s ease;
+    }
+
+    .grid-box-card:hover .box-icon-inner {
+      transform: scale(1.08);
+    }
+
+    .grid-box-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      transition: color 0.2s;
+    }
+
+    .grid-box-card p {
+      font-size: 0.82rem;
+      color: var(--text-sub);
+    }
+
+    .insta-gradient-icon {
+      background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+
+    .card-chzzk .box-icon-inner { background: rgba(0, 255, 163, 0.12); color: var(--chzzk-color); }
+    .card-chzzk:hover h3 { color: var(--chzzk-color); }
+
+    .card-youtube .box-icon-inner { background: rgba(255, 51, 51, 0.12); color: var(--youtube-color); }
+    .card-youtube:hover h3 { color: var(--youtube-color); }
+
+    .card-singtube .box-icon-inner { background: rgba(192, 132, 252, 0.12); color: var(--singtube-color); }
+    .card-singtube:hover h3 { color: var(--singtube-color); }
+
+    .card-replay .box-icon-inner { background: rgba(224, 36, 165, 0.12); color: var(--replay-color); }
+    .card-replay:hover h3 { color: var(--replay-color); }
+
+    .card-cafe .box-icon-inner { background: rgba(3, 199, 90, 0.12); color: var(--cafe-color); }
+    .card-cafe:hover h3 { color: var(--cafe-color); }
+
+    .card-x .box-icon-inner { background: rgba(226, 232, 240, 0.12); color: var(--x-color); }
+    .card-x:hover h3 { color: var(--x-color); }
+
+    .card-insta .box-icon-inner { background: rgba(225, 48, 108, 0.12); }
+    .card-insta:hover h3 {
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .card-discord .box-icon-inner { background: rgba(88, 101, 242, 0.12); color: var(--discord-color); }
+    .card-discord:hover h3 { color: var(--discord-color); }
+
+    .card-goods .box-icon-inner { background: rgba(157, 78, 221, 0.15); color: var(--goods-color); }
+    .card-goods:hover h3 { color: var(--goods-color); }
+
+    .x-svg-icon {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+
+    /* --- [2. 워량위키] --- */
+    .wiki-body {
+      display: grid;
+      grid-template-columns: 1fr 330px;
+      gap: 1.8rem;
+      margin-top: 1rem;
+      align-items: start;
+    }
+
+    @media (max-width: 850px) {
+      .wiki-body { grid-template-columns: 1fr; }
+    }
+
+    .wiki-toc {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 1.8rem;
+      display: inline-block;
+      min-width: 260px;
+    }
+
+    .wiki-toc h4 {
+      margin-bottom: 0.6rem;
+      color: var(--accent-light);
+    }
+
+    .wiki-toc ul {
+      list-style: none;
+    }
+
+    .wiki-toc li {
+      margin: 0.4rem 0;
+      font-size: 0.95rem;
+    }
+
+    .wiki-toc ul ul {
+      padding-left: 1.2rem;
+      margin: 0.2rem 0;
+    }
+
+    .wiki-toc li.sub-toc-item {
+      font-size: 0.88rem;
+    }
+
+    .wiki-toc a {
+      color: var(--text-main);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .wiki-toc a:hover {
+      text-decoration: underline;
+      color: var(--accent-light);
+    }
+
+    .wiki-section {
+      margin-bottom: 2rem;
+    }
+
+    .wiki-section h2 {
+      font-size: 1.35rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.4rem;
+      margin-bottom: 0.8rem;
+      color: var(--accent-light);
+    }
+
+    /* C열/D열 아래에 설명되는 E열 텍스트 크기를 D열(1.15rem)보다 살짝 작은 0.95rem으로 변경 */
+    .wiki-section p {
+      line-height: 1.75;
+      color: #ffffff;
+      white-space: pre-line;
+      font-size: 0.95rem; 
+    }
+
+    .wiki-section.sub-section {
+      margin-left: 1.2rem;
+      border-left: 2px dashed var(--border-color);
+      padding-left: 1rem;
+      margin-top: 1rem;
+    }
+
+    /* D열 하위 목차 제목 크기 1.15rem 유지 */
+    .wiki-section.sub-section h3 {
+      font-size: 1.15rem;
+      margin-bottom: 0.5rem;
+      color: #d8b4fe;
+    }
+
+    /* 프로필 상자 스크롤 시 우측 고정 (Sticky) */
+    .wiki-profile-box {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      position: sticky;
+      top: 90px;
+      z-index: 10;
+    }
+
+    .wiki-box-header {
+      background: var(--accent-purple);
+      color: #fff;
+      text-align: center;
+      padding: 0.8rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .wiki-box-img {
+      width: 100%;
+      height: auto;
+      max-height: 380px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .wiki-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .wiki-table th, .wiki-table td {
+      padding: 0.65rem 0.8rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .wiki-table th {
+      background: rgba(126, 43, 206, 0.15);
+      color: var(--accent-light);
+      width: 32%;
+      text-align: left;
+    }
+
+    /* --- [스케줄 화면] --- */
+    .schedule-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .schedule-img-container {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px dashed var(--border-color);
+      border-radius: 16px;
+      min-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .schedule-img-container img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* --- [노래책 화면] --- */
+    .songbook-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2rem;
+    }
+
+    .songbook-box h2 {
+      color: var(--accent-light);
+      margin-bottom: 1.2rem;
+      font-size: 1.5rem;
+    }
+
+    .notice-list {
+      line-height: 1.85;
+      color: var(--text-main);
+      margin-bottom: 1.8rem;
+      white-space: pre-line;
+    }
+
+    .songbook-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      padding: 0.8rem 1.6rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .btn-primary { background: var(--accent-purple); color: #fff; }
+    .btn-primary:hover { background: var(--accent-light); }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--accent-purple);
+      color: var(--accent-light);
+    }
+    .btn-secondary:hover { background: rgba(126, 43, 206, 0.2); }
+
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 1.6rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      position: relative;
+    }
+
+    /* --- [맨 위로 이동 (Scroll to Top) 버튼] --- */
+    .scroll-top-btn {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--accent-purple);
+      color: #ffffff;
+      border: 1px solid var(--accent-light);
+      box-shadow: 0 4px 15px rgba(126, 43, 206, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(15px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .scroll-top-btn.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .scroll-top-btn:hover {
+      background: var(--accent-light);
+      box-shadow: 0 6px 20px rgba(182, 102, 255, 0.7);
+      transform: translateY(-3px);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 배경 물방울 요소 -->
+  <div class="bubbles-bg">
+    <div class="bubble" style="width: 40px; height: 40px; left: 10%; animation-delay: 0s; animation-duration: 12s;"></div>
+    <div class="bubble" style="width: 25px; height: 25px; left: 25%; animation-delay: 2s; animation-duration: 16s;"></div>
+    <div class="bubble" style="width: 60px; height: 60px; left: 40%; animation-delay: 4s; animation-duration: 18s;"></div>
+    <div class="bubble" style="width: 30px; height: 30px; left: 58%; animation-delay: 1s; animation-duration: 13s;"></div>
+    <div class="bubble" style="width: 50px; height: 50px; left: 75%; animation-delay: 5s; animation-duration: 15s;"></div>
+    <div class="bubble" style="width: 20px; height: 20px; left: 90%; animation-delay: 3s; animation-duration: 11s;"></div>
+    <div class="bubble" style="width: 35px; height: 35px; left: 85%; animation-delay: 7s; animation-duration: 17s;"></div>
+    <div class="bubble" style="width: 45px; height: 45px; left: 18%; animation-delay: 6s; animation-duration: 14s;"></div>
+  </div>
+
+  <!-- 상단 네비게이션 -->
+  <header>
+    <div class="nav-container">
+      <div class="logo" onclick="switchTab('home')">
+        <div class="logo-icon"><i class="fa-solid fa-hat-wizard"></i></div>
+        SONGWORYANG
+      </div>
+      <ul class="nav-menu">
+        <li><button class="nav-btn active" onclick="switchTab('home')"><i data-lucide="home"></i> 홈</button></li>
+        <li><button class="nav-btn" onclick="switchTab('wiki')"><i data-lucide="book-open"></i> 워량위키</button></li>
+        <li><button class="nav-btn" onclick="switchTab('schedule')"><i data-lucide="calendar"></i> 스케줄</button></li>
+        <li><button class="nav-btn" onclick="switchTab('songbook')"><i data-lucide="music"></i> 노래책</button></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- 메인 영역 -->
+  <main>
+    
+    <!-- [1] 홈 화면 탭 -->
+    <div id="tab-home" class="tab-content active">
+      <div class="hero-profile-card">
+        <div class="profile-circle-wrap">
+          <div class="profile-circle-inner">
+            <img id="main-profile-img" src="물약이.jpg" alt="송워량 프로필">
+          </div>
+        </div>
+        <div class="profile-title-group">
+          <h1 class="profile-name-title">송워량</h1>
+          <div class="mail-badge">문의 songwolhyang@naver.com</div>
+        </div>
+        <p class="profile-desc-sub">24년생 마녀 워량이시다!</p>
+      </div>
+
+      <!-- 바로가기 카드리스트 -->
+      <div class="link-grid-v2">
+        <a href="https://chzzk.naver.com/d3c53b85a5a5aa176c94d49414cb1e03" target="_blank" class="grid-box-card card-chzzk">
+          <div class="box-icon-inner"><i class="fa-solid fa-tv"></i></div>
+          <h3>치지직</h3>
+          <p>생방송 스트리밍</p>
+        </a>
+
+        <a href="https://www.youtube.com/@songworyang" target="_blank" class="grid-box-card card-youtube">
+          <div class="box-icon-inner"><i class="fa-brands fa-youtube"></i></div>
+          <h3>유튜브</h3>
+          <p>메인 채널</p>
+        </a>
+
+        <a href="https://www.youtube.com/@ssongworyang" target="_blank" class="grid-box-card card-singtube">
+          <div class="box-icon-inner"><i class="fa-solid fa-music"></i></div>
+          <h3>노래튜브</h3>
+          <p>노래 커버 및 음악 채널</p>
+        </a>
+
+        <a href="https://www.youtube.com/@songworyangfull" target="_blank" class="grid-box-card card-replay">
+          <div class="box-icon-inner"><i class="fa-solid fa-arrow-rotate-right"></i></div>
+          <h3>다시보기</h3>
+          <p>방송 다시보기 채널</p>
+        </a>
+
+        <a href="https://cafe.naver.com/songwolhyang" target="_blank" class="grid-box-card card-cafe">
+          <div class="box-icon-inner"><i class="fa-solid fa-people-group"></i></div>
+          <h3>팬카페</h3>
+          <p>공지사항 및 커뮤니티</p>
+        </a>
+
+        <a href="https://x.com/songworyang" target="_blank" class="grid-box-card card-x">
+          <div class="box-icon-inner">
+            <svg class="x-svg-icon" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </div>
+          <h3>X (트위터)</h3>
+          <p>일상 & 방송 공지</p>
+        </a>
+
+        <a href="https://www.instagram.com/songworyang" target="_blank" class="grid-box-card card-insta">
+          <div class="box-icon-inner"><i class="fa-brands fa-instagram insta-gradient-icon"></i></div>
+          <h3>인스타</h3>
+          <p>사진 & 소식</p>
+        </a>
+
+        <a href="https://discord.com/invite/97rtxrwEjx" target="_blank" class="grid-box-card card-discord">
+          <div class="box-icon-inner"><i class="fa-brands fa-discord"></i></div>
+          <h3>디스코드</h3>
+          <p>방송 공지 & 알림</p>
+        </a>
+
+        <a href="https://marpple.shop/kr/songworyang" target="_blank" class="grid-box-card card-goods">
+          <div class="box-icon-inner"><i class="fa-solid fa-bag-shopping"></i></div>
+          <h3>굿즈샵</h3>
+          <p>공식 굿즈 구매</p>
+        </a>
+      </div>
+    </div>
+
+    <!-- [2] 워량위키 -->
+    <div id="tab-wiki" class="tab-content">
+      <div class="wiki-body">
+        <div class="wiki-main-content">
+          <div class="wiki-toc">
+            <h4>목차</h4>
+            <ul id="wiki-toc-list"></ul>
+          </div>
+
+          <div id="wiki-sections-container"></div>
+        </div>
+
+        <div class="wiki-profile-box">
+          <div class="wiki-box-header">송워량</div>
+          <img id="wiki-profile-img" class="wiki-box-img" src="" alt="송워량 마녀 프로필">
+          <table class="wiki-table" id="wiki-table-body">
+            <!-- 시트 A, B열 연동으로 동적 생성 -->
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- [3] 스케줄 탭 -->
+    <div id="tab-schedule" class="tab-content">
+      <div class="schedule-header">
+        <h2>주간 스케줄</h2>
+      </div>
+
+      <div class="schedule-img-container">
+        <img id="schedule-img" src="" alt="스케줄 이미지" style="display:none;">
+        <span id="schedule-placeholder" style="color: var(--text-sub);">등록된 스케줄 이미지가 없습니다.</span>
+      </div>
+    </div>
+
+    <!-- [4] 노래책 탭 -->
+    <div id="tab-songbook" class="tab-content">
+      <div class="songbook-box">
+        <h2>노래뱅 필독</h2>
+        <div class="notice-list">📌 신청곡은 방송 중 채팅 & 도네이션 메세지: !신청 제목 또는 !신청 가수-제목
+노래책에서 즉시 신청 또는 코드 복사 후 붙여넣기
+
+🎵 목록에 없는 곡도 신청 가능하나 모르면 넘어갑니다.
+이 스트리머는 음치, 박치, 발음, 첫음 못 잡는 이슈가 있습니다.
+전문적으로 노래를 배운 적이 없으므로 그냥 들어주세요>_O
+훈수 금지입니다.
+
+노래 검색은 위의 검색창 또는 Ctrl + F 또는 Cmd + F 로 찾아주세요!
+노래책에 추가가 되면 좋을 거 같은 노래는 아래 신청폼에 신청해주세요.</div>
+
+        <div class="songbook-actions">
+          <a href="https://form.naver.com/response/BY7d2lK3Pd6o4H0K4Gvwxw" target="_blank" class="action-btn btn-primary">
+            <i data-lucide="file-text"></i> 노래 신청하기
+          </a>
+          <a href="https://www.songstudio.live/@%EC%86%A1%EC%9B%8C%EB%9F%89" target="_blank" class="action-btn btn-secondary">
+            <i data-lucide="external-link"></i> 노래책 바로가기
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    SONG WORYANG
+  </footer>
+
+  <!-- 맨 위로 가기 버튼 -->
+  <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="맨 위로 이동">
+    <i class="fa-solid fa-chevron-up"></i>
+  </button>
+
+  <script>
+    lucide.createIcons();
+
+    // --- [더 동글동글하고 낮은 피치의 물방울 사운드 효과 (Web Audio API)] ---
+    let audioCtx = null;
+    function playBubblePopSound() {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        // 피치를 이전보다 낮추고(300Hz대) 부드럽게 글라이드시켜 동글동글한 울림 연출
+        const baseFreq = 260 + Math.random() * 120; // 260~380Hz의 포근하고 낮은 톤
+        osc.type = 'sine'; // 순수 사인파로 동글동글한 느낌 생성
+        osc.frequency.setValueAtTime(baseFreq, now);
+        osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.6, now + 0.12);
+
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.14);
+      } catch (e) {
+        // 사운드 재생 오류 무시
+      }
+    }
+
+    // --- [스크롤 감지 및 맨 위로 올라가기 버튼 기능] ---
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 250) {
+        scrollTopBtn.classList.add('show');
+      } else {
+        scrollTopBtn.classList.remove('show');
+      }
+    });
+
+    function scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+
+    // --- [마우스 클릭 시 터지는 물방울 파티클 시각 효과 & 사운드] ---
+    window.addEventListener('click', function(e) {
+      // 맨 위로 버튼 클릭 시 파티클 중복 방지
+      if (e.target.closest('#scrollTopBtn')) return;
+
+      playBubblePopSound();
+
+      // 클릭 지점에 물방울 파티클 생성
+      const burst = document.createElement('div');
+      burst.className = 'click-bubble-burst';
+      const size = 35 + Math.random() * 25;
+      burst.style.width = size + 'px';
+      burst.style.height = size + 'px';
+      burst.style.left = e.clientX + 'px';
+      burst.style.top = e.clientY + 'px';
+
+      document.body.appendChild(burst);
+
+      setTimeout(() => {
+        burst.remove();
+      }, 500);
+    });
+
+    // --- [탭 전환 기능] ---
+    function switchTab(tabId) {
+      const contents = document.querySelectorAll('.tab-content');
+      contents.forEach(content => content.classList.remove('active'));
+
+      const navBtns = document.querySelectorAll('.nav-btn');
+      navBtns.forEach(btn => btn.classList.remove('active'));
+
+      const targetTab = document.getElementById('tab-' + tabId);
+      if (targetTab) {
+        targetTab.classList.add('active');
+      }
+
+      // 네비게이션 버튼 활성화 스타일 연동
+      const btnMap = {
+        'home': 0,
+        'wiki': 1,
+        'schedule': 2,
+        'songbook': 3
+      };
+      if (btnMap[tabId] !== undefined && navBtns[btnMap[tabId]]) {
+        navBtns[btnMap[tabId]].classList.add('active');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // --- [CSV 데이터 파싱 유틸리티] ---
+    function parseCSV(text) {
+      const lines = [];
+      let row = [];
+      let inQuotes = false;
+      let currentToken = '';
+
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+        const nextC = text[i + 1];
+
+        if (c === '"') {
+          if (inQuotes && nextC === '"') {
+            currentToken += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (c === ',' && !inQuotes) {
+          row.push(currentToken.trim());
+          currentToken = '';
+        } else if ((c === '\r' || c === '\n') && !inQuotes) {
+          if (c === '\r' && nextC === '\n') {
+            i++;
+          }
+          row.push(currentToken.trim());
+          if (row.length > 0 && row.some(cell => cell.length > 0)) {
+            lines.push(row);
+          }
+          row = [];
+          currentToken = '';
+        } else {
+          currentToken += c;
+        }
+      }
+      if (currentToken || row.length > 0) {
+        row.push(currentToken.trim());
+        if (row.some(cell => cell.length > 0)) {
+          lines.push(row);
+        }
+      }
+      return lines;
+    }
+
+    // --- [구글 시트 연동 로드] ---
+    const sheet1Url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Lxb54y3QEnnrvsCmuGKEoUAuXeqCL_udMvz1cvSP61QnRQ64hIr5Chc-2toIw6MSWdxCA7rv2hup/pub?output=csv';
+    const sheet2Url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSbW_5ZVg9OfVy3Xg7y9pIhV8ZMtY3yJRjRlMao5qcJRpGBsk4JsbtXFKmQBOfaNpBaTWxy8eVFaNeh/pub?output=csv';
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // 시트 1: 프로필 이미지 연동
+      fetch(sheet1Url)
+        .then(res => res.text())
+        .then(data => {
+          const rows = parseCSV(data);
+          if (rows.length > 0) {
+            if (rows[0][0]) {
+              const mainImg = document.getElementById('main-profile-img');
+              if (mainImg) mainImg.src = rows[0][0];
+            }
+            if (rows[0][1]) {
+              const wikiImg = document.getElementById('wiki-profile-img');
+              if (wikiImg) wikiImg.src = rows[0][1];
+            }
+          }
+        })
+        .catch(err => console.error('Sheet 1 Load Error:', err));
+
+      // 시트 2: 워량위키 프로필 표 & 목차/본문 동적 연동
+      fetch(sheet2Url)
+        .then(res => res.text())
+        .then(data => {
+          const rows = parseCSV(data);
+          const tableBody = document.getElementById('wiki-table-body');
+          const tocList = document.getElementById('wiki-toc-list');
+          const sectionsContainer = document.getElementById('wiki-sections-container');
+
+          if (!tableBody || !tocList || !sectionsContainer) return;
+
+          tableBody.innerHTML = '';
+          tocList.innerHTML = '';
+          sectionsContainer.innerHTML = '';
+
+          // 1. A열(항목) / B열(내용) 프로필 표 렌더링
+          rows.forEach(row => {
+            const key = row[0];
+            const val = row[1];
+            if (key || val) {
+              const tr = document.createElement('tr');
+              tr.innerHTML = `<th>${key || ''}</th><td>${val || ''}</td>`;
+              tableBody.appendChild(tr);
+            }
+          });
+
+          // 2. C열(메인 목차), D열(하위 목차), E열(상세 텍스트 내용) 연동
+          let currentSectionEl = null;
+          let mainIndex = 0;
+          let subIndex = 0;
+
+          rows.forEach((row) => {
+            const cVal = row[2]; // C열
+            const dVal = row[3]; // D열
+            const eVal = row[4]; // E열 (설명 내용)
+
+            // C열 값이 존재하는 경우 -> 메인 목차 항목 추가
+            if (cVal) {
+              mainIndex++;
+              subIndex = 0;
+
+              const mainId = `sec-main-${mainIndex}`;
+              
+              // TOC 항목 추가
+              const tocLi = document.createElement('li');
+              tocLi.innerHTML = `<a href="#${mainId}">${cVal}</a>`;
+              tocList.appendChild(tocLi);
+
+              // 본문 섹션 추가
+              const secDiv = document.createElement('div');
+              secDiv.className = 'wiki-section';
+              secDiv.id = mainId;
+              secDiv.innerHTML = `<h2>${cVal}</h2>`;
+              if (eVal) {
+                secDiv.innerHTML += `<p>${eVal}</p>`;
+              }
+              sectionsContainer.appendChild(secDiv);
+              currentSectionEl = secDiv;
+            }
+            // D열 값이 존재하는 경우 -> 하위 목차 항목 추가
+            else if (dVal && currentSectionEl) {
+              subIndex++;
+              const subId = `sec-sub-${mainIndex}-${subIndex}`;
+
+              // TOC 하위 목록 UL 찾기 또는 생성
+              let lastTocLi = tocList.lastElementChild;
+              if (lastTocLi) {
+                let subUl = lastTocLi.querySelector('ul');
+                if (!subUl) {
+                  subUl = document.createElement('ul');
+                  lastTocLi.appendChild(subUl);
+                }
+                const subLi = document.createElement('li');
+                subLi.className = 'sub-toc-item';
+                subLi.innerHTML = `<a href="#${subId}">${dVal}</a>`;
+                subUl.appendChild(subLi);
+              }
+
+              // 본문 하위 섹션 추가
+              const subSecDiv = document.createElement('div');
+              subSecDiv.className = 'wiki-section sub-section';
+              subSecDiv.id = subId;
+              subSecDiv.innerHTML = `<h3>${dVal}</h3>`;
+              if (eVal) {
+                subSecDiv.innerHTML += `<p>${eVal}</p>`;
+              }
+              currentSectionEl.appendChild(subSecDiv);
+            }
+            // C열, D열 없이 E열만 연속되는 경우 기존 섹션에 내용 덧붙이기
+            else if (eVal && currentSectionEl) {
+              const p = document.createElement('p');
+              p.textContent = eVal;
+              const lastSub = currentSectionEl.querySelector('.sub-section:last-child');
+              if (lastSub) {
+                lastSub.appendChild(p);
+              } else {
+                currentSectionEl.appendChild(p);
+              }
+            }
+          });
+        })
+        .catch(err => console.error('Sheet 2 Load Error:', err));
+    });
+  </script>
+</body>
+</html>
