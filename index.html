@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SONGWORYANG | 송워량 공식 홈페이지</title>
+  <!-- FontAwesome & Lucide Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Tone.js for Web Audio Bubble Sound Effects -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-color: #0b0512;
+      --card-bg: #13081e;
+      --card-hover: #221033;
+      --accent-purple: #7e2bce;
+      --accent-light: #b666ff;
+      --accent-glow: rgba(126, 43, 206, 0.45);
+      --text-main: #f3e8ff;
+      --text-sub: #a78bfa;
+      --border-color: #2b1145;
+      
+      /* 브랜드 아이콘 포인트 컬러 */
+      --chzzk-color: #00ffa3;
+      --youtube-color: #ff3333;
+      --singtube-color: #c084fc;
+      --replay-color: #e024a5;
+      --cafe-color: #03c75a;
+      --x-color: #e2e8f0;
+      --discord-color: #5865f2;
+      --goods-color: #9d4edd;
+    }
+
+    /* 슬림함을 유지하면서 선 두께를 두껍게 다듬은 마법 지팡이 커서 */
+    *, body, button, a, input {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m19 19-11-11' stroke='%23ffffff' filter='drop-shadow(0 0 5px %23b666ff)'/%3E%3Cpath d='M8 8 4.5 4.5' stroke='%23e9d5ff' stroke-width='4.5'/%3E%3Ccircle cx='18.5' cy='18.5' r='1.8' fill='%23c084fc' stroke='none'/%3E%3C/svg%3E") 4 4, auto !important;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* --- [배경 몽환적인 물방울 애니메이션] --- */
+    .bubbles-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .bubble {
+      position: absolute;
+      bottom: -100px;
+      background: radial-gradient(circle at 30% 30%, rgba(192, 132, 252, 0.25), rgba(126, 43, 206, 0.08));
+      border: 1px solid rgba(192, 132, 252, 0.3);
+      box-shadow: 0 0 15px rgba(126, 43, 206, 0.2), inset 0 0 8px rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      animation: floatUp 14s infinite ease-in-out;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(0.8) rotate(0deg);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.6;
+      }
+      80% {
+        opacity: 0.5;
+      }
+      100% {
+        transform: translateY(-115vh) scale(1.2) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* 마우스 클릭 시 물방울 터짐 파티클 애니메이션 */
+    .click-bubble-burst {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(216, 180, 254, 0.8) 0%, rgba(126, 43, 206, 0.4) 70%, transparent 100%);
+      border: 1.5px solid rgba(224, 190, 255, 0.9);
+      box-shadow: 0 0 10px rgba(182, 102, 255, 0.6);
+      animation: popBurst 0.5s ease-out forwards;
+    }
+
+    /* 마우스 커서 이동 시 반짝이 파티클 */
+    .particle-sparkle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      border-radius: 50%;
+      background: #e9d5ff;
+      box-shadow: 0 0 8px #c084fc, 0 0 12px #a855f7;
+      animation: sparkleFade 0.7s linear forwards;
+    }
+
+    @keyframes sparkleFade {
+      0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.9;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(0.1) translateY(12px);
+        opacity: 0;
+      }
+    }
+
+    @keyframes popBurst {
+      0% {
+        transform: translate(-50%, -50%) scale(0.2);
+        opacity: 1;
+      }
+      70% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1.6);
+        opacity: 0;
+      }
+    }
+
+    header, main, footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* --- [상단 네비게이션] --- */
+    header {
+      background: rgba(11, 5, 18, 0.95);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.9rem 1.5rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-family: 'Cinzel', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #e9d5ff;
+      letter-spacing: 2px;
+      cursor: pointer;
+    }
+
+    .logo-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--accent-light);
+      background: rgba(126, 43, 206, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-light);
+      font-size: 1rem;
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 0.6rem;
+      list-style: none;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-main);
+      padding: 0.5rem 1.1rem;
+      border-radius: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.25s ease;
+      font-size: 0.95rem;
+    }
+
+    .nav-btn:hover {
+      background: rgba(126, 43, 206, 0.15);
+    }
+
+    .nav-btn.active {
+      background: var(--accent-purple) !important;
+      color: #ffffff !important;
+      border-color: var(--accent-purple) !important;
+      box-shadow: 0 0 15px rgba(126, 43, 206, 0.5);
+    }
+
+    /* 메인 공간 */
+    main {
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* --- [1. 홈 화면 : 히어로 프로필] --- */
+    .hero-profile-card {
+      background: linear-gradient(180deg, #150926 0%, #0e051a 100%);
+      border: 1.5px solid #4a197d;
+      border-radius: 28px;
+      padding: 3.5rem 2rem;
+      text-align: center;
+      box-shadow: 0 0 40px var(--accent-glow);
+      margin-bottom: 2rem;
+      position: relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hero-profile-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 50px rgba(182, 102, 255, 0.6);
+    }
+
+    .profile-circle-wrap {
+      width: 230px;
+      height: 230px;
+      margin: 0 auto 1.5rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #a855f7, #581c87);
+      padding: 5px;
+      box-shadow: 0 0 40px rgba(168, 85, 247, 0.55);
+      transition: transform 0.3s ease;
+    }
+
+    .hero-profile-card:hover .profile-circle-wrap {
+      transform: scale(1.04);
+    }
+
+    .profile-circle-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .profile-circle-inner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-title-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      margin-bottom: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .profile-name-title {
+      font-size: 2.3rem;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1;
+    }
+
+    .mail-badge {
+      display: inline-block;
+      background: rgba(126, 43, 206, 0.25);
+      border: 1px solid #6b21a8;
+      color: #d8b4fe;
+      padding: 0.25rem 0.8rem;
+      border-radius: 16px;
+      font-size: 0.75rem;
+    }
+
+    .profile-desc-sub {
+      color: var(--text-main);
+      font-size: 1.05rem;
+      font-weight: 500;
+    }
+
+    /* --- [바로가기 카드리스트] --- */
+    .link-grid-v2 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.2rem;
+    }
+
+    @media (max-width: 900px) {
+      .link-grid-v2 { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 550px) {
+      .link-grid-v2 { grid-template-columns: 1fr; }
+    }
+
+    .grid-box-card {
+      background: linear-gradient(145deg, #160927 0%, #10061d 100%);
+      border: 1.5px solid #361457;
+      border-radius: 20px;
+      padding: 1.8rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: var(--text-main);
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    .grid-box-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-light);
+      box-shadow: 0 8px 25px var(--accent-glow);
+    }
+
+    .box-icon-inner {
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+      transition: transform 0.2s ease;
+    }
+
+    .grid-box-card:hover .box-icon-inner {
+      transform: scale(1.08);
+    }
+
+    .grid-box-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      transition: color 0.2s;
+    }
+
+    .grid-box-card p {
+      font-size: 0.82rem;
+      color: var(--text-sub);
+    }
+
+    .insta-gradient-icon {
+      background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+
+    .card-chzzk .box-icon-inner { background: rgba(0, 255, 163, 0.12); color: var(--chzzk-color); }
+    .card-chzzk:hover h3 { color: var(--chzzk-color); }
+
+    .card-youtube .box-icon-inner { background: rgba(255, 51, 51, 0.12); color: var(--youtube-color); }
+    .card-youtube:hover h3 { color: var(--youtube-color); }
+
+    .card-singtube .box-icon-inner { background: rgba(192, 132, 252, 0.12); color: var(--singtube-color); }
+    .card-singtube:hover h3 { color: var(--singtube-color); }
+
+    .card-replay .box-icon-inner { background: rgba(224, 36, 165, 0.12); color: var(--replay-color); }
+    .card-replay:hover h3 { color: var(--replay-color); }
+
+    .card-cafe .box-icon-inner { background: rgba(3, 199, 90, 0.12); color: var(--cafe-color); }
+    .card-cafe:hover h3 { color: var(--cafe-color); }
+
+    .card-x .box-icon-inner { background: rgba(226, 232, 240, 0.12); color: var(--x-color); }
+    .card-x:hover h3 { color: var(--x-color); }
+
+    .card-insta .box-icon-inner { background: rgba(225, 48, 108, 0.12); }
+    .card-insta:hover h3 {
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .card-discord .box-icon-inner { background: rgba(88, 101, 242, 0.12); color: var(--discord-color); }
+    .card-discord:hover h3 { color: var(--discord-color); }
+
+    .card-goods .box-icon-inner { background: rgba(157, 78, 221, 0.15); color: var(--goods-color); }
+    .card-goods:hover h3 { color: var(--goods-color); }
+
+    .x-svg-icon {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+
+    /* --- [2. 워량위키 레이아웃] --- */
+    .wiki-main-content {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .wiki-top-row {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 2rem;
+      align-items: start;
+      margin-bottom: 3.5rem;
+    }
+
+    @media (max-width: 850px) {
+      .wiki-top-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .wiki-toc {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      display: inline-block;
+      width: 100%;
+      max-width: 280px;
+    }
+
+    .wiki-toc h4 {
+      margin-bottom: 0.7rem;
+      color: var(--accent-light);
+      font-size: 1.35rem;
+      font-weight: 800;
+    }
+
+    .wiki-toc ul {
+      list-style: none;
+    }
+
+    .wiki-toc li {
+      margin: 0.4rem 0;
+      font-size: 0.95rem;
+    }
+
+    .wiki-toc ul ul {
+      padding-left: 1.2rem;
+      margin: 0.2rem 0;
+    }
+
+    .wiki-toc li.sub-toc-item {
+      font-size: 0.88rem;
+    }
+
+    .wiki-toc a {
+      color: var(--text-main);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .wiki-toc a:hover {
+      color: var(--accent-light);
+    }
+
+    .wiki-profile-box {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+      width: 100%;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    }
+
+    .wiki-box-header {
+      background: var(--accent-purple);
+      color: #fff;
+      text-align: center;
+      padding: 0.8rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .wiki-box-img {
+      width: 100%;
+      height: auto;
+      max-height: 380px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .wiki-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .wiki-table th, .wiki-table td {
+      padding: 0.65rem 0.8rem;
+      border-top: 1px solid var(--border-color);
+      text-align: center; /* 프로필 부분 이름, 출생, 나이 등 텍스트 가운데 정렬 */
+    }
+
+    .wiki-table th {
+      background: rgba(126, 43, 206, 0.15);
+      color: var(--accent-light);
+      width: 32%;
+      text-align: center;
+    }
+
+    /* 관련 링크 헤더 스타일 (일반 th 헤더와 동일하게 통일) */
+    .wiki-links-header {
+      background: rgba(126, 43, 206, 0.15);
+      color: var(--accent-light);
+      text-align: center;
+      font-weight: 700;
+      padding: 0.65rem 0.8rem;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.9rem;
+    }
+
+    .wiki-link-icons-cell {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .wiki-link-icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      color: #f3e8ff;
+      text-decoration: none;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.2s ease;
+    }
+
+    .wiki-link-icon-btn:hover {
+      background: rgba(126, 43, 206, 0.3);
+      border-color: var(--accent-light);
+      color: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    .wiki-link-icon-btn i, .wiki-link-icon-btn svg {
+      font-size: 0.9rem;
+    }
+
+    .wiki-inline-img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin: 0.4rem 0;
+    }
+    /* 시트 내 * 구분자 표 스타일 (상단 헤더와 내용 박스 색상 구분) */
+    .wiki-custom-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.8rem 0;
+      background: rgba(19, 8, 30, 0.7);
+      border: 1.5px solid var(--border-color);
+      border-radius: 6px;
+      overflow: hidden;
+      font-size: 0.88rem;
+    }
+
+    .wiki-custom-table th {
+      background: #321054; /* 헤더 전용 다른 색상 네모 박스 */
+      color: #e9d5ff;
+      padding: 0.65rem 0.5rem;
+      text-align: center;
+      border: 1px solid var(--border-color);
+      font-weight: 700;
+    }
+
+    .wiki-custom-table td {
+      background: rgba(19, 8, 30, 0.95); /* 내용 박스들은 동일한 색상 박스로 통일 */
+      padding: 0.6rem 0.5rem;
+      text-align: center;
+      border: 1px solid var(--border-color);
+      color: #ffffff;
+    }
+
+    .wiki-custom-table tr:nth-child(even) td {
+      background: rgba(27, 12, 43, 0.95); /* 홀짝 교차 시에도 내용 박스 톤 유지 */
+    }
+
+    /* C열 텍스트 크기 (1.65rem) */
+    .wiki-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .wiki-section h2 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+      color: var(--accent-light);
+    }
+
+    /* E열 설명 텍스트: 크기 아주 살짝 확대 (0.94rem) 및 D열 하위 문자로 들여쓰기 적용 */
+    .wiki-section p {
+      line-height: 1.75;
+      color: #ffffff;
+      white-space: pre-line;
+      font-size: 0.94rem;
+      margin-left: 0.8rem;
+      margin-top: 0.4rem;
+    }
+
+    /* 하위 섹션: 왼쪽 점선 제거 */
+    .wiki-section.sub-section {
+      margin-left: 0.6rem;
+      border-left: none;
+      padding-left: 0;
+      margin-top: 1.4rem;
+      margin-bottom: 1.4rem;
+    }
+
+    /* D열 텍스트 크기: 아주 살짝 키움 (1.3rem) 및 실선 밑줄 적용 */
+    .wiki-section.sub-section h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      color: #d8b4fe;
+      border-bottom: 1px solid rgba(167, 139, 250, 0.4);
+      padding-bottom: 0.35rem;
+    }
+
+    .wiki-section.sub-section p {
+      margin-left: 0.8rem;
+      font-size: 0.94rem;
+    }
+
+    /* --- [오른쪽 퀵 네비게이션 메뉴] --- */
+    .floating-nav-panel {
+      position: fixed;
+      right: 25px;
+      top: 50%;
+      transform: translateY(-50%) translateX(120%);
+      width: 185px; /* 크기 살짝 줄임 */
+      background: #11071c;
+      border: 1.5px solid #2d134d;
+      border-radius: 20px;
+      padding: 1rem 0.8rem; /* 패딩 살짝 줄임 */
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(126, 43, 206, 0.2);
+      z-index: 900;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .floating-nav-panel.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(-50%) translateX(0);
+    }
+
+    .floating-nav-title {
+      font-size: 1.05rem; /* 폰트 살짝 축소 */
+      font-weight: 800;
+      color: #ffffff;
+      padding-left: 0.4rem;
+      margin-bottom: 0.1rem;
+      font-family: 'Cinzel', serif;
+      letter-spacing: 1px;
+    }
+
+    .floating-nav-subtitle {
+      font-size: 0.7rem; /* 부제 크기 살짝 축소 */
+      color: var(--text-sub);
+      padding-left: 0.4rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .floating-nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      max-height: 50vh;
+      overflow-y: auto;
+    }
+
+    .floating-nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0.75rem; /* 패딩 축소 */
+      border-radius: 14px;
+      color: #d8b4fe;
+      font-size: 0.82rem; /* 폰트 크기 살짝 축소 */
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      background: transparent;
+      border: none;
+      width: 100%;
+      text-align: left;
+    }
+
+    .floating-nav-item:hover {
+      background: rgba(126, 43, 206, 0.2);
+      color: #ffffff;
+    }
+
+    .floating-nav-item.active {
+      background: #c084fc;
+      color: #0b0512;
+      font-weight: 700;
+      box-shadow: 0 0 15px rgba(192, 132, 252, 0.5);
+    }
+
+    .floating-nav-item i {
+      font-size: 0.75rem;
+    }
+
+    .floating-nav-divider {
+      height: 1px;
+      background: #2b1145;
+      margin: 0.5rem 0;
+    }
+
+    .floating-top-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0.75rem; /* 패딩 축소 */
+      color: #d8b4fe;
+      font-size: 0.82rem; /* 폰트 축소 */
+      font-weight: 600;
+      background: transparent;
+      border: none;
+      border-radius: 14px;
+      transition: all 0.25s ease;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .floating-top-btn:hover {
+      background: rgba(126, 43, 206, 0.2);
+      color: #ffffff;
+    }
+
+    /* --- [스케줄 화면] --- */
+    .schedule-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .schedule-img-container {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px dashed var(--border-color);
+      border-radius: 16px;
+      min-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .schedule-img-container img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* --- [노래책 화면] --- */
+    .songbook-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2rem;
+    }
+
+    .songbook-box h2 {
+      color: var(--accent-light);
+      margin-bottom: 1.2rem;
+      font-size: 1.5rem;
+    }
+
+    .notice-list {
+      line-height: 1.85;
+      color: var(--text-main);
+      margin-bottom: 1.8rem;
+      white-space: pre-line;
+    }
+
+    .songbook-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      padding: 0.8rem 1.6rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .btn-primary { background: var(--accent-purple); color: #fff; }
+    .btn-primary:hover { background: var(--accent-light); }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--accent-purple);
+      color: var(--accent-light);
+    }
+    .btn-secondary:hover { background: rgba(126, 43, 206, 0.2); }
+
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 1.6rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      position: relative;
+    }
+
+    /* --- [맨 위로 이동 버튼] --- */
+    .scroll-top-btn {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--accent-purple);
+      color: #ffffff;
+      border: 1px solid var(--accent-light);
+      box-shadow: 0 4px 15px rgba(126, 43, 206, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(15px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .scroll-top-btn.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .scroll-top-btn:hover {
+      background: var(--accent-light);
+      box-shadow: 0 6px 20px rgba(182, 102, 255, 0.7);
+      transform: translateY(-3px);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 배경 물방울 요소 -->
+  <div class="bubbles-bg">
+    <div class="bubble" style="width: 40px; height: 40px; left: 10%; animation-delay: 0s; animation-duration: 12s;"></div>
+    <div class="bubble" style="width: 25px; height: 25px; left: 25%; animation-delay: 2s; animation-duration: 16s;"></div>
+    <div class="bubble" style="width: 60px; height: 60px; left: 40%; animation-delay: 4s; animation-duration: 18s;"></div>
+    <div class="bubble" style="width: 30px; height: 30px; left: 58%; animation-delay: 1s; animation-duration: 13s;"></div>
+    <div class="bubble" style="width: 50px; height: 50px; left: 75%; animation-delay: 5s; animation-duration: 15s;"></div>
+    <div class="bubble" style="width: 20px; height: 20px; left: 90%; animation-delay: 3s; animation-duration: 11s;"></div>
+    <div class="bubble" style="width: 35px; height: 35px; left: 85%; animation-delay: 7s; animation-duration: 17s;"></div>
+    <div class="bubble" style="width: 45px; height: 45px; left: 18%; animation-delay: 6s; animation-duration: 14s;"></div>
+  </div>
+
+  <!-- 상단 네비게이션 -->
+  <header>
+    <div class="nav-container">
+      <div class="logo" onclick="switchTab('home')">
+        <div class="logo-icon"><i class="fa-solid fa-hat-wizard"></i></div>
+        SONGWORYANG
+      </div>
+      <ul class="nav-menu">
+        <li><button class="nav-btn active" onclick="switchTab('home')"><i data-lucide="home"></i> 홈</button></li>
+        <li><button class="nav-btn" onclick="switchTab('wiki')"><i data-lucide="book-open"></i> 워량위키</button></li>
+        <li><button class="nav-btn" onclick="switchTab('schedule')"><i data-lucide="calendar"></i> 스케줄</button></li>
+        <li><button class="nav-btn" onclick="switchTab('songbook')"><i data-lucide="music"></i> 노래책</button></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- 메인 영역 -->
+  <main>
+    
+    <!-- [1] 홈 화면 탭 -->
+    <div id="tab-home" class="tab-content active">
+      <div class="hero-profile-card">
+        <div class="profile-circle-wrap">
+          <div class="profile-circle-inner">
+            <img id="main-profile-img" src="물약이.jpg" alt="송워량 프로필">
+          </div>
+        </div>
+        <div class="profile-title-group">
+          <h1 class="profile-name-title">송워량</h1>
+          <div class="mail-badge">문의 songwolhyang@naver.com</div>
+        </div>
+        <p class="profile-desc-sub">24년생 마녀 워량이시다!</p>
+      </div>
+
+      <!-- 바로가기 카드리스트 -->
+      <div class="link-grid-v2">
+        <a href="https://chzzk.naver.com/d3c53b85a5a5aa176c94d49414cb1e03" target="_blank" class="grid-box-card card-chzzk">
+          <div class="box-icon-inner"><i class="fa-solid fa-tv"></i></div>
+          <h3>치지직</h3>
+          <p>생방송 스트리밍</p>
+        </a>
+
+        <a href="https://www.youtube.com/@songworyang" target="_blank" class="grid-box-card card-youtube">
+          <div class="box-icon-inner"><i class="fa-brands fa-youtube"></i></div>
+          <h3>유튜브</h3>
+          <p>메인 채널</p>
+        </a>
+
+        <a href="https://www.youtube.com/@ssongworyang" target="_blank" class="grid-box-card card-singtube">
+          <div class="box-icon-inner"><i class="fa-solid fa-music"></i></div>
+          <h3>노래튜브</h3>
+          <p>노래 커버 및 음악 채널</p>
+        </a>
+
+        <a href="https://www.youtube.com/@songworyangfull" target="_blank" class="grid-box-card card-replay">
+          <div class="box-icon-inner"><i class="fa-solid fa-arrow-rotate-right"></i></div>
+          <h3>다시보기</h3>
+          <p>방송 다시보기 채널</p>
+        </a>
+
+        <a href="https://cafe.naver.com/songwolhyang" target="_blank" class="grid-box-card card-cafe">
+          <div class="box-icon-inner"><i class="fa-solid fa-people-group"></i></div>
+          <h3>팬카페</h3>
+          <p>공지사항 및 커뮤니티</p>
+        </a>
+
+        <a href="https://x.com/songworyang" target="_blank" class="grid-box-card card-x">
+          <div class="box-icon-inner">
+            <svg class="x-svg-icon" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </div>
+          <h3>X (트위터)</h3>
+          <p>일상 & 방송 공지</p>
+        </a>
+
+        <a href="https://www.instagram.com/songworyang" target="_blank" class="grid-box-card card-insta">
+          <div class="box-icon-inner"><i class="fa-brands fa-instagram insta-gradient-icon"></i></div>
+          <h3>인스타</h3>
+          <p>사진 & 소식</p>
+        </a>
+
+        <a href="https://discord.com/invite/97rtxrwEjx" target="_blank" class="grid-box-card card-discord">
+          <div class="box-icon-inner"><i class="fa-brands fa-discord"></i></div>
+          <h3>디스코드</h3>
+          <p>방송 공지 & 알림</p>
+        </a>
+
+        <a href="https://marpple.shop/kr/songworyang" target="_blank" class="grid-box-card card-goods">
+          <div class="box-icon-inner"><i class="fa-solid fa-bag-shopping"></i></div>
+          <h3>굿즈샵</h3>
+          <p>공식 굿즈 구매</p>
+        </a>
+      </div>
+    </div>
+
+    <!-- [2] 워량위키 -->
+    <div id="tab-wiki" class="tab-content">
+      <div class="wiki-main-content">
+        <!-- 프로필 박스와 목차가 평행하게 배치되는 상단 영역 -->
+        <div class="wiki-top-row">
+          <div class="wiki-toc" id="main-wiki-toc">
+            <h4>목차</h4>
+            <ul id="wiki-toc-list"></ul>
+          </div>
+
+          <!-- 우측 프로필 박스 -->
+          <div class="wiki-profile-box">
+            <div class="wiki-box-header">송워량</div>
+            <img id="wiki-profile-img" class="wiki-box-img" src="" alt="송워량 마녀 프로필">
+            <table class="wiki-table" id="wiki-table-body">
+              <!-- 시트 A, B열 연동으로 동적 생성 -->
+            </table>
+
+            <!-- 고정 관련 링크 섹션 -->
+            <div class="wiki-links-header">관련 링크</div>
+            <table class="wiki-table">
+              <tr>
+                <th>플랫폼</th>
+                <td class="wiki-link-icons-cell">
+                  <a href="https://chzzk.naver.com/d3c53b85a5a5aa176c94d49414cb1e03" target="_blank" class="wiki-link-icon-btn" style="color:var(--chzzk-color)" title="치지직"><i class="fa-solid fa-tv"></i></a>
+                  <a href="https://www.youtube.com/@songworyang" target="_blank" class="wiki-link-icon-btn" style="color:var(--youtube-color)" title="유튜브"><i class="fa-brands fa-youtube"></i></a>
+                  <a href="https://www.youtube.com/@ssongworyang" target="_blank" class="wiki-link-icon-btn" style="color:var(--singtube-color)" title="노래튜브"><i class="fa-solid fa-music"></i></a>
+                  <a href="https://www.youtube.com/@songworyangfull" target="_blank" class="wiki-link-icon-btn" style="color:var(--replay-color)" title="다시보기"><i class="fa-solid fa-arrow-rotate-right"></i></a>
+                  <a href="https://www.twitch.tv/songwolhyang" target="_blank" class="wiki-link-icon-btn" style="color:#a855f7" title="트위치 (송출중단)"><i class="fa-brands fa-twitch"></i></a>
+                </td>
+              </tr>
+              <tr>
+                <th>SNS</th>
+                <td class="wiki-link-icons-cell">
+                  <a href="https://x.com/songworyang" target="_blank" class="wiki-link-icon-btn" title="X (트위터)"><svg class="x-svg-icon" style="width:13px;height:13px;" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                  <a href="https://www.instagram.com/songworyang" target="_blank" class="wiki-link-icon-btn" title="인스타그램"><i class="fa-brands fa-instagram insta-gradient-icon" style="font-size:0.95rem;"></i></a>
+                  <a href="https://discord.com/invite/97rtxrwEjx" target="_blank" class="wiki-link-icon-btn" style="color:var(--discord-color)" title="디스코드"><i class="fa-brands fa-discord"></i></a>
+                </td>
+              </tr>
+              <tr>
+                <th>커뮤니티</th>
+                <td class="wiki-link-icons-cell">
+                  <a href="https://cafe.naver.com/songwolhyang" target="_blank" class="wiki-link-icon-btn" style="color:var(--cafe-color)" title="팬카페"><i class="fa-solid fa-people-group"></i></a>
+                </td>
+              </tr>
+              <tr>
+                <th>기타</th>
+                <td class="wiki-link-icons-cell">
+                  <a href="https://marpple.shop/kr/songworyang" target="_blank" class="wiki-link-icon-btn" style="color:var(--goods-color)" title="굿즈샵"><i class="fa-solid fa-bag-shopping"></i></a>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- 프로필 박스가 완전히 끝난 아래 지점부터 시작되는 개요 및 본문 섹션 -->
+        <div id="wiki-sections-container"></div>
+      </div>
+    </div>
+
+    <!-- [3] 스케줄 탭 -->
+    <div id="tab-schedule" class="tab-content">
+      <div class="schedule-header">
+        <h2>주간 스케줄</h2>
+      </div>
+
+      <div class="schedule-img-container">
+        <img id="schedule-img" src="" alt="스케줄 이미지" style="display:none;">
+        <span id="schedule-placeholder" style="color: var(--text-sub);">등록된 스케줄 이미지가 없습니다.</span>
+      </div>
+    </div>
+
+    <!-- [4] 노래책 탭 -->
+    <div id="tab-songbook" class="tab-content">
+      <div class="songbook-box">
+        <h2 id="songbook-title">노래뱅 필독</h2>
+        <div id="songbook-notice" class="notice-list">신청곡은 방송 중 채팅 & 도네이션 메세지: !신청 제목 또는 !신청 가수-제목
+노래책에서 즉시 신청 또는 코드 복사 후 붙여넣기
+
+🎵 목록에 없는 곡도 신청 가능하나 모르면 넘어갑니다.
+이 스트리머는 음치, 박치, 발음, 첫음 못 잡는 이슈가 있습니다.
+전문적으로 노래를 배운 적이 없으므로 그냥 들어주세요>_O
+훈수 금지입니다.
+
+노래 검색은 위의 검색창 또는 Ctrl + F 또는 Cmd + F 로 찾아주세요!
+노래책에 추가가 되면 좋을 거 같은 노래는 아래 신청폼에 신청해주세요.</div>
+
+        <div class="songbook-actions">
+          <a id="songbook-form-btn" href="https://form.naver.com/response/BY7d2lK3Pd6o4H0K4Gvwxw" target="_blank" class="action-btn btn-primary">
+            <i data-lucide="file-text"></i> 노래 신청하기
+          </a>
+          <a id="songbook-link-btn" href="https://www.songstudio.live/@%EC%86%A1%EC%9B%8C%EB%9F%89" target="_blank" class="action-btn btn-secondary">
+            <i data-lucide="external-link"></i> 노래책 바로가기
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    SONGWORYANG
+  </footer>
+
+  <!-- 우측 퀵 네비게이션 플로팅 메뉴 -->
+  <div id="floatingNavPanel" class="floating-nav-panel">
+    <div class="floating-nav-title">SONGWORYANG</div>
+    <div class="floating-nav-subtitle">목차</div>
+    <div id="floatingNavList" class="floating-nav-list">
+      <!-- C열 목차 동적 반영 -->
+    </div>
+    <div class="floating-nav-divider"></div>
+    <button class="floating-top-btn" onclick="scrollToTop()">
+      <span>맨 위로</span>
+      <i class="fa-solid fa-chevron-up"></i>
+    </button>
+    <button class="floating-top-btn" onclick="scrollToBottom()" style="margin-top: 0.2rem;">
+      <span>맨 아래로</span>
+      <i class="fa-solid fa-chevron-down"></i>
+    </button>
+  </div>
+
+  <!-- 기존 맨 위로 가기 버튼 -->
+  <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="맨 위로 이동">
+    <i class="fa-solid fa-chevron-up"></i>
+  </button>
+
+  <script>
+    lucide.createIcons();
+
+    // --- [초창기 부드럽고 동글동글한 물방울 퐁당 사운드 복원 (피치 살짝 낮춤)] ---
+    let audioCtx = null;
+    function playBubblePopSound() {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        
+        const now = audioCtx.currentTime;
+        
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const filter = audioCtx.createBiquadFilter();
+
+        osc.type = 'sine';
+        
+        // 피치 음역대를 기존(420Hz -> 650Hz)에서 살짝 낮은 (330Hz -> 520Hz) 구간으로 조정
+        osc.frequency.setValueAtTime(330, now);
+        osc.frequency.exponentialRampToValueAtTime(520, now + 0.06);
+
+        // 튀는 날카로움을 더욱 부드럽게 감싸주는 저역 필터 (500Hz)
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(500, now);
+
+        // 부드럽고 몽글몽글한 볼륨 인벨롭
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.26, now + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.13);
+      } catch (e) {}
+    }
+
+    // --- [마우스 이동 시 별빛 파티클 트레일 생성] ---
+    let lastParticleTime = 0;
+    window.addEventListener('mousemove', function(e) {
+      const now = Date.now();
+      if (now - lastParticleTime > 45) { // 45ms 마다 반짝이 생성
+        lastParticleTime = now;
+        const p = document.createElement('div');
+        p.className = 'particle-sparkle';
+        const sz = 4 + Math.random() * 5;
+        p.style.width = sz + 'px';
+        p.style.height = sz + 'px';
+        p.style.left = e.clientX + 'px';
+        p.style.top = e.clientY + 'px';
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 700);
+      }
+    });
+
+    // --- [스크롤 감지 & 퀵 네비게이션 메뉴 상태 관리] ---
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    const floatingNavPanel = document.getElementById('floatingNavPanel');
+
+    window.addEventListener('scroll', function() {
+      const scrollY = window.scrollY;
+      
+      // 맨 위로 버튼
+      if (scrollY > 250) {
+        scrollTopBtn.classList.add('show');
+      } else {
+        scrollTopBtn.classList.remove('show');
+      }
+
+      // 위키 탭 활성화 상태이고 목차가 화면 위로 지나갈 때 퀵 메뉴 노출
+      const wikiTab = document.getElementById('tab-wiki');
+      const mainToc = document.getElementById('main-wiki-toc');
+      
+      if (wikiTab && wikiTab.classList.contains('active') && mainToc) {
+        const tocRect = mainToc.getBoundingClientRect();
+        if (tocRect.bottom < 50) {
+          floatingNavPanel.classList.add('show');
+        } else {
+          floatingNavPanel.classList.remove('show');
+        }
+      } else {
+        floatingNavPanel.classList.remove('show');
+      }
+
+      // 현재 보이는 섹션 하이라이트 업데이트
+      updateActiveNavHighlight();
+    });
+
+    function updateActiveNavHighlight() {
+      const sections = document.querySelectorAll('.wiki-section[id^="sec-main-"]');
+      const navButtons = document.querySelectorAll('.floating-nav-item');
+      let currentSectionId = '';
+
+      sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= 150 && rect.bottom >= 100) {
+          currentSectionId = section.id;
+        }
+      });
+
+      navButtons.forEach(btn => {
+        if (btn.getAttribute('data-target') === currentSectionId) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        const yOffset = -80;
+        const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function scrollToBottom() {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    // --- [마우스 클릭 파티클 효과] ---
+    window.addEventListener('click', function(e) {
+      if (e.target.closest('#scrollTopBtn') || e.target.closest('.floating-nav-panel')) return;
+
+      playBubblePopSound();
+
+      const burst = document.createElement('div');
+      burst.className = 'click-bubble-burst';
+      const size = 35 + Math.random() * 25;
+      burst.style.width = size + 'px';
+      burst.style.height = size + 'px';
+      burst.style.left = e.clientX + 'px';
+      burst.style.top = e.clientY + 'px';
+
+      document.body.appendChild(burst);
+      setTimeout(() => burst.remove(), 500);
+    });
+
+    // --- [탭 전환 기능] ---
+    function switchTab(tabId) {
+      const contents = document.querySelectorAll('.tab-content');
+      contents.forEach(content => content.classList.remove('active'));
+
+      const navBtns = document.querySelectorAll('.nav-btn');
+      navBtns.forEach(btn => btn.classList.remove('active'));
+
+      const targetTab = document.getElementById('tab-' + tabId);
+      if (targetTab) {
+        targetTab.classList.add('active');
+      }
+
+      const btnMap = { 'home': 0, 'wiki': 1, 'schedule': 2, 'songbook': 3 };
+      if (btnMap[tabId] !== undefined && navBtns[btnMap[tabId]]) {
+        navBtns[btnMap[tabId]].classList.add('active');
+      }
+
+      if (tabId !== 'wiki') {
+        floatingNavPanel.classList.remove('show');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // --- [CSV 파싱 및 시트 데이터 연동] ---
+    function parseCSV(text) {
+      const lines = [];
+      let row = [];
+      let inQuotes = false;
+      let currentToken = '';
+
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+        const nextC = text[i + 1];
+
+        if (c === '"') {
+          if (inQuotes && nextC === '"') {
+            currentToken += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (c === ',' && !inQuotes) {
+          row.push(currentToken.trim());
+          currentToken = '';
+        } else if ((c === '\r' || c === '\n') && !inQuotes) {
+          if (c === '\r' && nextC === '\n') i++;
+          row.push(currentToken.trim());
+          if (row.length > 0 && row.some(cell => cell.length > 0)) lines.push(row);
+          row = [];
+          currentToken = '';
+        } else {
+          currentToken += c;
+        }
+      }
+      if (currentToken || row.length > 0) {
+        row.push(currentToken.trim());
+        if (row.some(cell => cell.length > 0)) lines.push(row);
+      }
+      return lines;
+    }
+
+    const sheet1Url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Lxb54y3QEnnrvsCmuGKEoUAuXeqCL_udMvz1cvSP61QnRQ64hIr5Chc-2toIw6MSWdxCA7rv2hup/pub?output=csv';
+    const sheet2Url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSbW_5ZVg9OfVy3Xg7y9pIhV8ZMtY3yJRjRlMao5qcJRpGBsk4JsbtXFKmQBOfaNpBaTWxy8eVFaNeh/pub?output=csv';
+    const songbookSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR7P-95KaspmbM2_W0rO0RB8hBQq4a6Z9J0mMuIGiT09InxNzTULF7Pha7Bf4UUMfQ0Pp2oRNh5zygd/pub?output=csv';
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // 노래책 시트 연동 (A1: 제목, B1: 내용, H1: 신청하기 링크, L1: 노래책 바로가기 링크)
+      fetch(songbookSheetUrl)
+        .then(res => res.text())
+        .then(data => {
+          const rows = parseCSV(data);
+          if (rows.length > 0) {
+            const r1 = rows[0];
+            const titleEl = document.getElementById('songbook-title');
+            const noticeEl = document.getElementById('songbook-notice');
+            const formBtn = document.getElementById('songbook-form-btn');
+            const linkBtn = document.getElementById('songbook-link-btn');
+
+            if (r1[0] && titleEl) {
+              titleEl.textContent = r1[0]; // A1 행
+            }
+            if (r1[1] && noticeEl) {
+              noticeEl.textContent = r1[1]; // B1 행
+            }
+            if (r1[7] && formBtn) {
+              formBtn.href = r1[7]; // H1 행 (0부터 시작하여 index 7)
+            }
+            if (r1[11] && linkBtn) {
+              linkBtn.href = r1[11]; // L1 행 (0부터 시작하여 index 11)
+            }
+          }
+        })
+        .catch(err => console.error('Songbook Sheet Load Error:', err));
+
+      fetch(sheet1Url)
+        .then(res => res.text())
+        .then(data => {
+          const rows = parseCSV(data);
+          if (rows.length > 0) {
+            if (rows[0][0]) {
+              const mainImg = document.getElementById('main-profile-img');
+              if (mainImg) mainImg.src = rows[0][0];
+            }
+            if (rows[0][1]) {
+              const wikiImg = document.getElementById('wiki-profile-img');
+              if (wikiImg) wikiImg.src = rows[0][1];
+            }
+            // Sheet 1 C열 1행 (C1셀) - 스케줄 이미지 연동
+            if (rows[0][2]) {
+              const scheduleImg = document.getElementById('schedule-img');
+              const schedulePlaceholder = document.getElementById('schedule-placeholder');
+              if (scheduleImg) {
+                scheduleImg.src = rows[0][2];
+                scheduleImg.style.display = 'block';
+              }
+              if (schedulePlaceholder) {
+                schedulePlaceholder.style.display = 'none';
+              }
+            }
+          }
+        })
+        .catch(err => console.error('Sheet 1 Load Error:', err));
+
+      fetch(sheet2Url)
+        .then(res => res.text())
+        .then(data => {
+          const rows = parseCSV(data);
+          const tableBody = document.getElementById('wiki-table-body');
+          const tocList = document.getElementById('wiki-toc-list');
+          const sectionsContainer = document.getElementById('wiki-sections-container');
+          const floatingNavList = document.getElementById('floatingNavList');
+
+          if (!tableBody || !tocList || !sectionsContainer) return;
+
+          tableBody.innerHTML = '';
+          tocList.innerHTML = '';
+          sectionsContainer.innerHTML = '';
+          if (floatingNavList) floatingNavList.innerHTML = '';
+
+          // 1. 프로필 표 렌더링 (이미지 URL 감지 포함)
+          rows.forEach(row => {
+            const key = row[0];
+            let val = row[1];
+            if (key || val) {
+              const tr = document.createElement('tr');
+              if (val && isImageUrl(val)) {
+                val = `<img src="${val}" class="wiki-inline-img" alt="${key || '이미지'}">`;
+              }
+              tr.innerHTML = `<th>${key || ''}</th><td>${val || ''}</td>`;
+              tableBody.appendChild(tr);
+            }
+          });
+
+          // 이미지 URL 판별 헬퍼 함수 정의
+          function isImageUrl(url) {
+            if (!url || typeof url !== 'string') return false;
+            const cleanUrl = url.split('?')[0].toLowerCase();
+            return /\.(png|jpg|jpeg|gif|webp|svg|bmp)$/.test(cleanUrl) || url.startsWith('http') && (url.includes('drive.google.com') || url.includes('imgur.com'));
+          }
+
+          // 일반 텍스트 내 URL 하이퍼링크 및 이중 백틱(``) 빗금 변환 헬퍼 (색상 변경 없음)
+          function linkifyText(text) {
+            if (!text) return '';
+            
+            // 1. 이중 백틱(``)으로 감싸진 텍스트를 취소선(빗금) HTML로 변환 (색상 유지)
+            text = text.replace(/``([^`]+)``/g, '<span style="text-decoration: line-through;">$1</span>');
+
+            // 2. 일반 URL 하이퍼링크 변환
+            const urlPattern = /(https?:\/\/[^\s<]+)/g;
+            return text.replace(urlPattern, function(url) {
+              return `<a href="${url}" target="_blank" style="color:#c084fc; text-decoration:underline; font-weight:500;">${url}</a>`;
+            });
+          }
+
+          // 목차 텍스트용 빗금 포맷터 (색상 변경 없음, 목차 전용)
+          function formatTocText(text) {
+            if (!text) return '';
+            // 이중 백틱 감지 시 목차 항목에도 동일하게 취소선 적용
+            return text.replace(/``([^`]+)``/g, '<span style="text-decoration: line-through;">$1</span>');
+          }
+
+          // 셀 내용 렌더링 헬퍼 함수
+          function renderCellContent(text) {
+            if (!text) return '';
+            let trimmed = text.trim();
+
+            if (isImageUrl(trimmed)) {
+              return `<img src="${trimmed}" class="wiki-inline-img" alt="위키 첨부 이미지">`;
+            }
+
+            return linkifyText(trimmed);
+          }
+
+          // 2. C, D, E, F열 연동 및 퀵 네비게이션 생성
+          let currentSectionEl = null;
+          let mainIndex = 0;
+          let subIndex = 0;
+          let activeTableHtml = '';
+          let activeTableHeadersCount = 0;
+
+          rows.forEach((row) => {
+            const cVal = row[2] ? row[2].trim() : '';
+            const dVal = row[3] ? row[3].trim() : '';
+            const eVal = row[4] ? row[4].trim() : '';
+            const fVal = row[5] ? row[5].trim() : ''; // F열 내용 연동
+
+            if (cVal) {
+              mainIndex++;
+              subIndex = 0;
+              activeTableHtml = '';
+              activeTableHeadersCount = 0;
+              const mainId = `sec-main-${mainIndex}`;
+              
+              const tocLi = document.createElement('li');
+              tocLi.innerHTML = `<a href="#${mainId}" onclick="event.preventDefault(); scrollToSection('${mainId}');">${formatTocText(cVal)}</a>`;
+              tocList.appendChild(tocLi);
+
+              if (floatingNavList) {
+                const navBtn = document.createElement('button');
+                navBtn.className = 'floating-nav-item';
+                navBtn.setAttribute('data-target', mainId);
+                navBtn.onclick = () => scrollToSection(mainId);
+                navBtn.innerHTML = `<span>${formatTocText(cVal)}</span><i class="fa-solid fa-arrow-right"></i>`;
+                floatingNavList.appendChild(navBtn);
+              }
+
+              const secDiv = document.createElement('div');
+              secDiv.className = 'wiki-section';
+              secDiv.id = mainId;
+              secDiv.innerHTML = `<h2>${renderCellContent(cVal)}</h2>`;
+              
+              // E열 백틱(`) 표 헤더 정의가 있을 때 표 생성 처리
+              if (eVal.startsWith('`') && eVal.endsWith('`')) {
+                const headers = eVal.slice(1, -1).split('`').map(h => h.trim());
+                activeTableHeadersCount = headers.length;
+                activeTableHtml = `<table class="wiki-custom-table"><thead><tr>`;
+                headers.forEach(h => {
+                  activeTableHtml += `<th>${renderCellContent(h)}</th>`;
+                });
+                activeTableHtml += `</tr></thead><tbody>`;
+                
+                // 만약 현재 행의 F열에 *로 시작하는 데이터가 있다면 즉시 행 추가
+                if (fVal && fVal.startsWith('*')) {
+                  const rowsData = fVal.split('\n');
+                  rowsData.forEach(rLine => {
+                    rLine = rLine.trim();
+                    if (rLine.startsWith('*') && rLine.endsWith('*')) {
+                      const cols = rLine.slice(1, -1).split('*').map(c => c.trim());
+                      activeTableHtml += `<tr>`;
+                      cols.forEach(col => {
+                        if (col.startsWith('http') && (col.includes('youtube.com') || col.includes('youtu.be') || col.includes('youtube'))) {
+                          activeTableHtml += `<td><a href="${col}" target="_blank" class="wiki-link-icon-btn" style="color:var(--youtube-color); display:inline-flex; width:26px; height:26px;" title="유튜브 링크"><i class="fa-brands fa-youtube"></i></a></td>`;
+                        } else if (col.includes('[비공개]')) {
+                          activeTableHtml += `<td><div style="display:inline-flex; align-items:center; justify-content:center; gap:4px;"><a href="#" onclick="event.preventDefault();" class="wiki-link-icon-btn" style="color:var(--youtube-color); display:inline-flex; width:24px; height:24px;" title="비공개"><i class="fa-brands fa-youtube"></i></a> <span style="font-size:0.8rem; color:#888;">[비공개]</span></div></td>`;
+                        } else {
+                          activeTableHtml += `<td>${linkifyText(col)}</td>`;
+                        }
+                      });
+                      activeTableHtml += `</tr>`;
+                    }
+                  });
+                }
+                activeTableHtml += `</tbody></table>`;
+                secDiv.innerHTML += activeTableHtml;
+              } else {
+                if (eVal) {
+                  secDiv.innerHTML += `<p>${renderCellContent(eVal)}</p>`;
+                }
+                if (fVal && !fVal.startsWith('*')) {
+                  secDiv.innerHTML += `<p>${renderCellContent(fVal)}</p>`;
+                }
+              }
+
+              sectionsContainer.appendChild(secDiv);
+              currentSectionEl = secDiv;
+            } else if (dVal && currentSectionEl) {
+              subIndex++;
+              activeTableHtml = '';
+              activeTableHeadersCount = 0;
+              const subId = `sec-sub-${mainIndex}-${subIndex}`;
+
+              let lastTocLi = tocList.lastElementChild;
+              if (lastTocLi) {
+                let subUl = lastTocLi.querySelector('ul');
+                if (!subUl) {
+                  subUl = document.createElement('ul');
+                  lastTocLi.appendChild(subUl);
+                }
+                const subLi = document.createElement('li');
+                subLi.className = 'sub-toc-item';
+                subLi.innerHTML = `<a href="#${subId}" onclick="event.preventDefault(); scrollToSection('${subId}');">${formatTocText(dVal)}</a>`;
+                subUl.appendChild(subLi);
+              }
+
+              const subSecDiv = document.createElement('div');
+              subSecDiv.className = 'wiki-section sub-section';
+              subSecDiv.id = subId;
+              subSecDiv.innerHTML = `<h3>${renderCellContent(dVal)}</h3>`;
+
+              if (eVal.startsWith('`') && eVal.endsWith('`')) {
+                const headers = eVal.slice(1, -1).split('`').map(h => h.trim());
+                activeTableHeadersCount = headers.length;
+                activeTableHtml = `<table class="wiki-custom-table"><thead><tr>`;
+                headers.forEach(h => {
+                  activeTableHtml += `<th>${renderCellContent(h)}</th>`;
+                });
+                activeTableHtml += `</tr></thead><tbody>`;
+
+                if (fVal && fVal.startsWith('*')) {
+                  const rowsData = fVal.split('\n');
+                  rowsData.forEach(rLine => {
+                    rLine = rLine.trim();
+                    if (rLine.startsWith('*') && rLine.endsWith('*')) {
+                      const cols = rLine.slice(1, -1).split('*').map(c => c.trim());
+                      activeTableHtml += `<tr>`;
+                      cols.forEach(col => {
+                        if (col.startsWith('http') && (col.includes('youtube.com') || col.includes('youtu.be') || col.includes('youtube'))) {
+                          activeTableHtml += `<td><a href="${col}" target="_blank" class="wiki-link-icon-btn" style="color:var(--youtube-color); display:inline-flex; width:26px; height:26px;" title="유튜브 링크"><i class="fa-brands fa-youtube"></i></a></td>`;
+                        } else if (col.includes('[비공개]')) {
+                          activeTableHtml += `<td><div style="display:inline-flex; align-items:center; justify-content:center; gap:4px;"><a href="#" onclick="event.preventDefault();" class="wiki-link-icon-btn" style="color:var(--youtube-color); display:inline-flex; width:24px; height:24px;" title="비공개"><i class="fa-brands fa-youtube"></i></a> <span style="font-size:0.8rem; color:#888;">[비공개]</span></div></td>`;
+                        } else {
+                          activeTableHtml += `<td>${linkifyText(col)}</td>`;
+                        }
+                      });
+                      activeTableHtml += `</tr>`;
+                    }
+                  });
+                }
+                activeTableHtml += `</tbody></table>`;
+                subSecDiv.innerHTML += activeTableHtml;
+              } else {
+                if (eVal) {
+                  subSecDiv.innerHTML += `<p>${renderCellContent(eVal)}</p>`;
+                }
+                if (fVal && !fVal.startsWith('*')) {
+                  subSecDiv.innerHTML += `<p>${renderCellContent(fVal)}</p>`;
+                }
+              }
+
+              currentSectionEl.appendChild(subSecDiv);
+            } else if ((eVal || fVal) && currentSectionEl) {
+              let addedToTable = false;
+              if (fVal && fVal.startsWith('*')) {
+                const targetTable = currentSectionEl.querySelector('.sub-section:last-child .wiki-custom-table tbody') || currentSectionEl.querySelector('.wiki-custom-table tbody');
+                if (targetTable) {
+                  const rowsData = fVal.split('\n');
+                  rowsData.forEach(rLine => {
+                    rLine = rLine.trim();
+                    if (rLine.startsWith('*') && rLine.endsWith('*')) {
+                      const cols = rLine.slice(1, -1).split('*').map(c => c.trim());
+                      let trHtml = `<tr>`;
+                      cols.forEach(col => {
+                        if (col.startsWith('http') && (col.includes('youtube.com') || col.includes('youtu.be') || col.includes('youtube'))) {
+                          trHtml += `<td><a href="${col}" target="_blank" class="wiki-link-icon-btn" style="color:var(--youtube-color); display:inline-flex; width:26px; height:26px;" title="유튜브 링크"><i class="fa-brands fa-youtube"></i></a></td>`;
+                        } else if (col.includes('[비공개]')) {
+                          trHtml += `<td><div style="display:inline-flex; align-items:center; justify-content:center; gap:4px;"><a href="#" onclick="event.preventDefault();" class="wiki-link-icon-btn" style="color:var(--youtube-color); display:inline-flex; width:24px; height:24px;" title="비공개"><i class="fa-brands fa-youtube"></i></a> <span style="font-size:0.8rem; color:#888;">[비공개]</span></div></td>`;
+                        } else {
+                          trHtml += `<td>${linkifyText(col)}</td>`;
+                        }
+                      });
+                      trHtml += `</tr>`;
+                      targetTable.insertAdjacentHTML('beforeend', trHtml);
+                      addedToTable = true;
+                    }
+                  });
+                }
+              }
+
+              if (!addedToTable) {
+                let textToAdd = eVal || fVal;
+                if (textToAdd) {
+                  const p = document.createElement('p');
+                  p.innerHTML = renderCellContent(textToAdd);
+                  const lastSub = currentSectionEl.querySelector('.sub-section:last-child');
+                  if (lastSub) {
+                    lastSub.appendChild(p);
+                  } else {
+                    currentSectionEl.appendChild(p);
+                  }
+                }
+              }
+            }
+          });
+        })
+        .catch(err => console.error('Sheet 2 Load Error:', err));
+    });
+  </script>
+</body>
+</html>
